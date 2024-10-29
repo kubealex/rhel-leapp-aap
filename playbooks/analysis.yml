@@ -1,0 +1,10 @@
+---
+- name: RHEL AAP Upgrade | Pre-flight checks
+  hosts: rhel_servers
+  become: true
+  roles:
+    - role: infra.leapp.analysis
+      vars:
+        leapp_upgrade_type: "cdn"
+        leapp_high_sev_as_inhibitors: false
+        infra_leapp_upgrade_system_roles_collection: redhat.rhel_system_roles

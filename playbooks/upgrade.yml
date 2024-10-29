@@ -1,0 +1,9 @@
+---
+- name: RHEL AAP Upgrade | Run Upgrade
+  hosts: rhel_servers
+  become: true
+  roles:
+    - role: infra.leapp.upgrade
+      vars:
+        leapp_upgrade_type: "cdn"
+        infra_leapp_upgrade_system_roles_collection: redhat.rhel_system_roles

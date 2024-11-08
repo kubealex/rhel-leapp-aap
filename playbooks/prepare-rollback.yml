@@ -1,0 +1,26 @@
+---
+- name: RHEL AAP Upgrade | Pre-flight checks
+  hosts: rhel_servers
+  become: true
+  roles:
+    - name: infra.lvm_snapshots.snapshot_create
+      snapshot_create_set_name: ripu
+      snapshot_create_snapshot_autoextend_threshold: 70
+      snapshot_create_snapshot_autoextend_percent: 20
+      snapshot_create_boot_backup: true
+      snapshot_create_volumes:
+        - vg: rootvg
+          lv: rootlv
+          size: 2G
+  post_tasks:
+    - name: RHEL AAP Upgrade | Ensure required packages are in place
+      ansible.builtin.dnf:
+        name: boom-boot
+        state: present
+
+    - name: RHEL AAP Upgrade | Create Boom entry
+      ansible.builtin.shell:
+        cmd: boom create --title "RHEL8 Snapshot" --rootlv rootvg/rootlv_ripu
+    # - name: RHEL AAP Upgrade | Create Boom entry
+    #   ansible.builtin.shell:
+    #     cmd: grub2-mkconfig > /boot/grub2/grub.cfg

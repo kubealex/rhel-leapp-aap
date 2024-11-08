@@ -1,0 +1,7 @@
+---
+- name: RHEL AAP Upgrade | Pre-flight checks
+  hosts: rhel_servers
+  become: true
+  roles:
+    - name: infra.lvm_snapshots.snapshot_revert
+      snapshot_revert_set_name: ripu

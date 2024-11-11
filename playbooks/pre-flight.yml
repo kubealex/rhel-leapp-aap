@@ -3,7 +3,7 @@
   hosts: rhel_servers
   become: true
   pre_tasks:
-    - name: RHEL AAP Ugrade | Ensure all packages are updated
+    - name: RHEL AAP Ugrade | Ensure all packages are updated # noqa package-latest
       ansible.builtin.dnf:
         name: "*"
         state: latest
@@ -25,9 +25,3 @@
 
     - name: RHEL AAP Upgrade | Reboot system to apply new kernel if any
       ansible.builtin.reboot:
-
-  roles:
-    - role: infra.leapp.analysis
-      vars:
-        leapp_upgrade_type: "cdn"
-

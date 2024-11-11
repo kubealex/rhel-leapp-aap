@@ -7,3 +7,5 @@
       vars:
         leapp_upgrade_type: "cdn"
         infra_leapp_upgrade_system_roles_collection: redhat.rhel_system_roles
+        post_upgrade_unset_release: true
+        post_upgrade_update: true

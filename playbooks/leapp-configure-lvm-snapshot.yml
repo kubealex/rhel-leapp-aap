@@ -1,6 +1,6 @@
 ---
-- name: RHEL AAP Upgrade | Pre-flight checks
-  hosts: rhel_servers
+- name: RHEL AAP Upgrade | Manage LVM snapshots
+  hosts: "{{ rhel_server | default('rhel_servers', true) }}"
   become: true
   roles:
     - role: infra.lvm_snapshots.snapshot_create
@@ -9,12 +9,12 @@
       snapshot_create_snapshot_autoextend_percent: 20
       snapshot_create_boot_backup: true
       snapshot_create_volumes:
-        - vg: rootvg
-          lv: rootlv
-          size: 10G
-        - vg: rootvg
-          lv: varlv
-          size: 5G
+        - vg: rhel
+          lv: root
+          size: 15G
+        # - vg: rhel
+        #   lv: var
+        #   size: 2G
   # post_tasks:
   #   - name: RHEL AAP Upgrade | Ensure required packages are in place
   #     ansible.builtin.dnf:

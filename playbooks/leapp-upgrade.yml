@@ -1,6 +1,6 @@
 ---
-- name: RHEL AAP Upgrade | Run Upgrade
-  hosts: rhel_servers
+- name: RHEL AAP Upgrade | Run upgrade tasks
+  hosts: "{{ rhel_server | default('rhel_servers', true) }}"
   become: true
   roles:
     - role: infra.leapp.upgrade

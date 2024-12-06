@@ -1,0 +1,9 @@
+---
+- name: RHEL AAP Upgrade | Remediate common issues
+  hosts: "{{ rhel_server | default('rhel_servers', true) }}"
+  become: true
+  roles:
+    - role: infra.leapp.remediate
+      vars:
+      remediation_todo:
+        - leapp_loaded_removed_kernel_drivers

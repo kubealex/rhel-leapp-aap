@@ -100,10 +100,18 @@ aap2_templates:
 aap2_workflows:
   - aap2_workflow_name: "[RHEL AAP Upgrade] Prepare systems for upgrade"
     aap2_workflow_project: RHEL AAP Upgrade
-    aap2_workflow_extra_vars:
-      image_tag: app
-      build_folder: app-repo
-      repo_url: "{{ image_mode_application_repo }}"
+    aap2_workflow_survey_enabled: true
+    aap2_workflow_survey_spec:
+      description: "RHEL Upgrade survey"
+      name: "RHEL Upgrade survey"
+      spec:
+        - question_name: "Server name/Group Name"
+          question_description: "Name of the server or server group as present in inventory"
+          required: true
+          type: "text"
+          default: "rhel_servers"
+          index: 0
+          variable: "target_hosts"
     aap2_workflow_nodes:
       - node_name: leapp-pre-flight
         approval: false
@@ -121,10 +129,18 @@ aap2_workflows:
 
   - aap2_workflow_name: "[RHEL AAP Upgrade] Remediate inhibitors and re-run analysis"
     aap2_workflow_project: RHEL AAP Upgrade
-    aap2_workflow_extra_vars:
-      image_tag: app
-      build_folder: app-repo
-      repo_url: "{{ image_mode_application_repo }}"
+    aap2_workflow_survey_enabled: true
+    aap2_workflow_survey_spec:
+      description: "RHEL Upgrade survey"
+      name: "RHEL Upgrade survey"
+      spec:
+        - question_name: "Server name/Group Name"
+          question_description: "Name of the server or server group as present in inventory"
+          required: true
+          type: "text"
+          default: "rhel_servers"
+          index: 0
+          variable: "target_hosts"
     aap2_workflow_nodes:
       - node_name: leapp-remediate-inhibitors
         approval: false
@@ -137,10 +153,18 @@ aap2_workflows:
 
   - aap2_workflow_name: "[RHEL AAP Upgrade] Perform rollback on systems"
     aap2_workflow_project: RHEL AAP Upgrade
-    aap2_workflow_extra_vars:
-      image_tag: app
-      build_folder: app-repo
-      repo_url: "{{ image_mode_application_repo }}"
+    aap2_workflow_survey_enabled: true
+    aap2_workflow_survey_spec:
+      description: "RHEL Upgrade survey"
+      name: "RHEL Upgrade survey"
+      spec:
+        - question_name: "Server name/Group Name"
+          question_description: "Name of the server or server group as present in inventory"
+          required: true
+          type: "text"
+          default: "rhel_servers"
+          index: 0
+          variable: "target_hosts"
     aap2_workflow_nodes:
       - node_name: leapp-rollback
         approval: false

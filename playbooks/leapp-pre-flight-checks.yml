@@ -1,6 +1,6 @@
 ---
 - name: RHEL AAP Upgrade | Pre-flight checks
-  hosts: "{{ rhel_server | default('rhel_servers', true) }}"
+  hosts: "{{ target_hosts | default('rhel_servers', true) }}"
   become: true
   pre_tasks:
     - name: RHEL AAP Ugrade | Ensure all packages are updated # noqa package-latest

@@ -1,7 +1,11 @@
 ---
 - name: RHEL AAP Upgrade | Manage LVM snapshots
-  hosts: "{{ rhel_server | default('rhel_servers', true) }}"
+  hosts: "{{ target_hosts | default('rhel_servers', true) }}"
   become: true
+  environment:
+     ENV LANG: en_US.utf8
+     ENV LC_CTYPE: en_US.utf8
+     ENV LC_ALL: en_US.utf8
   roles:
     - role: infra.lvm_snapshots.snapshot_create
       snapshot_create_set_name: ripu

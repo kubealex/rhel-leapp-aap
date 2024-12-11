@@ -10,6 +10,17 @@ aap2_controller_password: redhat
 inventory_servers_username: sysadmin
 inventory_servers_password: redhat
 
+survey_spec:
+  description: "RHEL Upgrade survey"
+  name: "RHEL Upgrade survey"
+  spec:
+    - question_name: "Server name/Group Name"
+      question_description: "Name of the server or server group as present in inventory"
+      required: true
+      type: "text"
+      default: "rhel_servers"
+      index: 0
+      variable: "target_hosts"
 
 aap2_galaxy_credentials:
   - name: RHEL AAP Upgrade - Galaxy Credentials
@@ -54,6 +65,8 @@ aap2_templates:
       - RHEL AAP Upgrade - Linux Credentials
     aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
     aap2_template_project: RHEL AAP Upgrade
+    aap2_template_survey_enabled: true
+    aap2_template_survey_spec: "{{ survey_spec }}"
     # ------------------------------------
   - aap2_template_name: "[RHEL AAP Upgrade] Configure LVM Snapshots for servers"
     aap2_template_playbook: playbooks/leapp-configure-lvm-snapshot.yml
@@ -61,6 +74,8 @@ aap2_templates:
       - RHEL AAP Upgrade - Linux Credentials
     aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
     aap2_template_project: RHEL AAP Upgrade
+    aap2_template_survey_enabled: true
+    aap2_template_survey_spec: "{{ survey_spec }}"
     # ------------------------------------
   - aap2_template_name: "[RHEL AAP Upgrade] Run LEAPP Analysis"
     aap2_template_playbook: playbooks/leapp-analysis.yml
@@ -68,6 +83,8 @@ aap2_templates:
       - RHEL AAP Upgrade - Linux Credentials
     aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
     aap2_template_project: RHEL AAP Upgrade
+    aap2_template_survey_enabled: true
+    aap2_template_survey_spec: "{{ survey_spec }}"
     # ------------------------------------
   - aap2_template_name: "[RHEL AAP Upgrade] Run LEAPP Upgrade"
     aap2_template_playbook: playbooks/leapp-upgrade.yml
@@ -75,6 +92,8 @@ aap2_templates:
       - RHEL AAP Upgrade - Linux Credentials
     aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
     aap2_template_project: RHEL AAP Upgrade
+    aap2_template_survey_enabled: true
+    aap2_template_survey_spec: "{{ survey_spec }}"
     # ------------------------------------
   - aap2_template_name: "[RHEL AAP Upgrade] Rollback system upgrade"
     aap2_template_playbook: playbooks/leapp-rollback.yml
@@ -82,6 +101,8 @@ aap2_templates:
       - RHEL AAP Upgrade - Linux Credentials
     aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
     aap2_template_project: RHEL AAP Upgrade
+    aap2_template_survey_enabled: true
+    aap2_template_survey_spec: "{{ survey_spec }}"
     # ------------------------------------
   - aap2_template_name: "[RHEL AAP Upgrade] Remove LVM Snapshots"
     aap2_template_playbook: playbooks/leapp-remove-snapshot.yml
@@ -89,6 +110,8 @@ aap2_templates:
       - RHEL AAP Upgrade - Linux Credentials
     aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
     aap2_template_project: RHEL AAP Upgrade
+    aap2_template_survey_enabled: true
+    aap2_template_survey_spec: "{{ survey_spec }}"
     # ------------------------------------
   - aap2_template_name: "[RHEL AAP Upgrade] Remediate inhibitors"
     aap2_template_playbook: playbooks/leapp-remediate.yml
@@ -96,22 +119,14 @@ aap2_templates:
       - RHEL AAP Upgrade - Linux Credentials
     aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
     aap2_template_project: RHEL AAP Upgrade
+    aap2_template_survey_enabled: true
+    aap2_template_survey_spec: "{{ survey_spec }}"
 
 aap2_workflows:
   - aap2_workflow_name: "[RHEL AAP Upgrade] Prepare systems for upgrade"
     aap2_workflow_project: RHEL AAP Upgrade
     aap2_workflow_survey_enabled: true
-    aap2_workflow_survey_spec:
-      description: "RHEL Upgrade survey"
-      name: "RHEL Upgrade survey"
-      spec:
-        - question_name: "Server name/Group Name"
-          question_description: "Name of the server or server group as present in inventory"
-          required: true
-          type: "text"
-          default: "rhel_servers"
-          index: 0
-          variable: "target_hosts"
+    aap2_workflow_survey_spec: "{{ survey_spec }}"
     aap2_workflow_nodes:
       - node_name: leapp-pre-flight
         approval: false
@@ -130,17 +145,7 @@ aap2_workflows:
   - aap2_workflow_name: "[RHEL AAP Upgrade] Remediate inhibitors and re-run analysis"
     aap2_workflow_project: RHEL AAP Upgrade
     aap2_workflow_survey_enabled: true
-    aap2_workflow_survey_spec:
-      description: "RHEL Upgrade survey"
-      name: "RHEL Upgrade survey"
-      spec:
-        - question_name: "Server name/Group Name"
-          question_description: "Name of the server or server group as present in inventory"
-          required: true
-          type: "text"
-          default: "rhel_servers"
-          index: 0
-          variable: "target_hosts"
+    aap2_workflow_survey_spec: "{{ survey_spec }}"
     aap2_workflow_nodes:
       - node_name: leapp-remediate-inhibitors
         approval: false
@@ -154,17 +159,7 @@ aap2_workflows:
   - aap2_workflow_name: "[RHEL AAP Upgrade] Perform rollback on systems"
     aap2_workflow_project: RHEL AAP Upgrade
     aap2_workflow_survey_enabled: true
-    aap2_workflow_survey_spec:
-      description: "RHEL Upgrade survey"
-      name: "RHEL Upgrade survey"
-      spec:
-        - question_name: "Server name/Group Name"
-          question_description: "Name of the server or server group as present in inventory"
-          required: true
-          type: "text"
-          default: "rhel_servers"
-          index: 0
-          variable: "target_hosts"
+    aap2_workflow_survey_spec: "{{ survey_spec }}"
     aap2_workflow_nodes:
       - node_name: leapp-rollback
         approval: false

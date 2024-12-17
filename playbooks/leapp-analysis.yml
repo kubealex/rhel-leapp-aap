@@ -7,9 +7,9 @@
       vars:
         leapp_upgrade_type: "satellite"
 
-        satellite_organization:
-        satellite_activation_key_pre_leapp:
-        satellite_activation_key_leapp:
+        satellite_organization: ETISALAT
+        satellite_activation_key_pre_leapp: RHEL7_NON_PROD
+        satellite_activation_key_leapp: RHEL7_NON_PROD
 
         leapp_high_sev_as_inhibitors: false
         infra_leapp_upgrade_system_roles_collection: redhat.rhel_system_roles

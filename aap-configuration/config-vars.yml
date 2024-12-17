@@ -22,150 +22,158 @@ survey_spec:
       index: 0
       variable: "target_hosts"
 
-aap2_galaxy_credentials:
-  - name: RHEL AAP Upgrade - Galaxy Credentials
-    galaxy_url: "{{ automation_hub_url }}"
-    galaxy_auth_url: "{{ automation_hub_auth_url }}"
-    galaxy_token: "{{ automation_hub_token }}"
+### REPLACE THE CONTENT BELOW THIS LINE ON OLD config-vars.yml WITH THIS UPDATED VERSION ###
 
-aap2_projects:
+controller_credentials:
+  - name: "RHEL AAP Upgrade - Linux Credentials"
+    credential_type: "Machine"
+    organization: Default
+    inputs:
+      username: "{{ inventory_servers_username }}"
+      password: "{{ inventory_servers_password }}"
+
+controller_projects:
   - name: "RHEL AAP Upgrade"
     scm_url: "{{ main_repo_url }}"
-    scm_branch: "main"
-    default_ee: "Minimal execution environment"
-    force_update: false
+    scm_type: "git"
+    scm_branch: "testing"
+    scm_update_on_launch: false
+    credential: unix-gitlab
+    organization: Default
+    default_environment: "Minimal execution environment"
+    update_project: true
+    wait: true
+    timeout: 60
+
+  # ------------------------------------
+  # ------------------------------------
+controller_inventories:
+  - name: RHEL AAP Upgrade - SCM Inventory
+    organization: Default
   # ------------------------------------
   # ------------------------------------
 
-aap2_machine_credentials:
-  - name: "RHEL AAP Upgrade - Linux Credentials"
-    username: "{{ inventory_servers_username }}"
-    password: "{{ inventory_servers_password }}"
+controller_inventory_sources:
+  - name: RHEL AAP Upgrade - SCM Inventory Source
+    inventory: RHEL AAP Upgrade - SCM Inventory
+    source: scm
+    credential: unix-gitlab
+    source_project: "RHEL AAP Upgrade"
+    source_path: inventory
+    organization: Default
+
   # ------------------------------------
   # ------------------------------------
 
-aap2_inventories:
-  - aap2_inventory_name: RHEL AAP Upgrade - SCM Inventory
-  # ------------------------------------
-  # ------------------------------------
+controller_templates:
+  - name: "[RHEL AAP Upgrade] Run pre-flight checks"
+    organization: Default
+    playbook: playbooks/leapp-pre-flight-checks.yml
+    credentials:
+      - RHEL AAP Upgrade - Linux Credentials
+    inventory: RHEL AAP Upgrade - SCM Inventory
+    project: RHEL AAP Upgrade
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    # ------------------------------------
+  - name: "[RHEL AAP Upgrade] Configure LVM Snapshots for servers"
+    organization: Default
+    playbook: playbooks/leapp-configure-lvm-snapshot.yml
+    credentials:
+      - RHEL AAP Upgrade - Linux Credentials
+    inventory: RHEL AAP Upgrade - SCM Inventory
+    project: RHEL AAP Upgrade
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    # ------------------------------------
+  - name: "[RHEL AAP Upgrade] Run LEAPP Analysis"
+    organization: Default
+    playbook: playbooks/leapp-analysis.yml
+    credentials:
+      - RHEL AAP Upgrade - Linux Credentials
+    inventory: RHEL AAP Upgrade - SCM Inventory
+    project: RHEL AAP Upgrade
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    # ------------------------------------
+  - name: "[RHEL AAP Upgrade] Run LEAPP Upgrade"
+    organization: Default
+    playbook: playbooks/leapp-upgrade.yml
+    credentials:
+      - RHEL AAP Upgrade - Linux Credentials
+    inventory: RHEL AAP Upgrade - SCM Inventory
+    project: RHEL AAP Upgrade
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    # ------------------------------------
+  - name: "[RHEL AAP Upgrade] Rollback system upgrade"
+    organization: Default
+    playbook: playbooks/leapp-rollback.yml
+    credentials:
+      - RHEL AAP Upgrade - Linux Credentials
+    inventory: RHEL AAP Upgrade - SCM Inventory
+    project: RHEL AAP Upgrade
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    # ------------------------------------
+  - name: "[RHEL AAP Upgrade] Remove LVM Snapshots"
+    organization: Default
+    playbook: playbooks/leapp-remove-snapshot.yml
+    credentials:
+      - RHEL AAP Upgrade - Linux Credentials
+    inventory: RHEL AAP Upgrade - SCM Inventory
+    project: RHEL AAP Upgrade
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    # ------------------------------------
+  - name: "[RHEL AAP Upgrade] Remediate inhibitors"
+    organization: Default
+    playbook: playbooks/leapp-remediate.yml
+    credentials:
+      - RHEL AAP Upgrade - Linux Credentials
+    inventory: RHEL AAP Upgrade - SCM Inventory
+    project: RHEL AAP Upgrade
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
 
-aap2_inventory_sources:
-  - aap2_inventory_source_name: RHEL AAP Upgrade - SCM Inventory Source
-    aap2_inventory_source_inventory: RHEL AAP Upgrade - SCM Inventory
-    aap2_inventory_source_type: scm
-    aap2_inventory_source_project: "RHEL AAP Upgrade"
-    aap2_inventory_source_path: inventory
-  # ------------------------------------
-  # ------------------------------------
-
-aap2_templates:
-  - aap2_template_name: "[RHEL AAP Upgrade] Run pre-flight checks"
-    aap2_template_playbook: playbooks/leapp-pre-flight-checks.yml
-    aap2_template_credentials:
-      - RHEL AAP Upgrade - Linux Credentials
-    aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
-    aap2_template_project: RHEL AAP Upgrade
-    aap2_template_survey_enabled: true
-    aap2_template_survey_spec: "{{ survey_spec }}"
-    # ------------------------------------
-  - aap2_template_name: "[RHEL AAP Upgrade] Configure LVM Snapshots for servers"
-    aap2_template_playbook: playbooks/leapp-configure-lvm-snapshot.yml
-    aap2_template_credentials:
-      - RHEL AAP Upgrade - Linux Credentials
-    aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
-    aap2_template_project: RHEL AAP Upgrade
-    aap2_template_survey_enabled: true
-    aap2_template_survey_spec: "{{ survey_spec }}"
-    # ------------------------------------
-  - aap2_template_name: "[RHEL AAP Upgrade] Run LEAPP Analysis"
-    aap2_template_playbook: playbooks/leapp-analysis.yml
-    aap2_template_credentials:
-      - RHEL AAP Upgrade - Linux Credentials
-    aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
-    aap2_template_project: RHEL AAP Upgrade
-    aap2_template_survey_enabled: true
-    aap2_template_survey_spec: "{{ survey_spec }}"
-    # ------------------------------------
-  - aap2_template_name: "[RHEL AAP Upgrade] Run LEAPP Upgrade"
-    aap2_template_playbook: playbooks/leapp-upgrade.yml
-    aap2_template_credentials:
-      - RHEL AAP Upgrade - Linux Credentials
-    aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
-    aap2_template_project: RHEL AAP Upgrade
-    aap2_template_survey_enabled: true
-    aap2_template_survey_spec: "{{ survey_spec }}"
-    # ------------------------------------
-  - aap2_template_name: "[RHEL AAP Upgrade] Rollback system upgrade"
-    aap2_template_playbook: playbooks/leapp-rollback.yml
-    aap2_template_credentials:
-      - RHEL AAP Upgrade - Linux Credentials
-    aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
-    aap2_template_project: RHEL AAP Upgrade
-    aap2_template_survey_enabled: true
-    aap2_template_survey_spec: "{{ survey_spec }}"
-    # ------------------------------------
-  - aap2_template_name: "[RHEL AAP Upgrade] Remove LVM Snapshots"
-    aap2_template_playbook: playbooks/leapp-remove-snapshot.yml
-    aap2_template_credentials:
-      - RHEL AAP Upgrade - Linux Credentials
-    aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
-    aap2_template_project: RHEL AAP Upgrade
-    aap2_template_survey_enabled: true
-    aap2_template_survey_spec: "{{ survey_spec }}"
-    # ------------------------------------
-  - aap2_template_name: "[RHEL AAP Upgrade] Remediate inhibitors"
-    aap2_template_playbook: playbooks/leapp-remediate.yml
-    aap2_template_credentials:
-      - RHEL AAP Upgrade - Linux Credentials
-    aap2_template_inventory: RHEL AAP Upgrade - SCM Inventory
-    aap2_template_project: RHEL AAP Upgrade
-    aap2_template_survey_enabled: true
-    aap2_template_survey_spec: "{{ survey_spec }}"
-
-aap2_workflows:
-  - aap2_workflow_name: "[RHEL AAP Upgrade] Prepare systems for upgrade"
-    aap2_workflow_project: RHEL AAP Upgrade
-    aap2_workflow_survey_enabled: true
-    aap2_workflow_survey_spec: "{{ survey_spec }}"
-    aap2_workflow_nodes:
-      - node_name: leapp-pre-flight
-        approval: false
+controller_workflows:
+  - name: "[RHEL AAP Upgrade] Prepare systems for upgrade"
+    organization: Default
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    simplified_workflow_nodes:
+      - identifier: leapp-pre-flight
         nodes_on_success:
           - leapp-configure-lvm-snapshot
-        node_job_template: "[RHEL AAP Upgrade] Run pre-flight checks"
-      - node_name: leapp-configure-lvm-snapshot
-        approval: false
+        unified_job_template: "[RHEL AAP Upgrade] Run pre-flight checks"
+      - identifier: leapp-configure-lvm-snapshot
         nodes_on_success:
           - leapp-analysis
-        node_job_template: "[RHEL AAP Upgrade] Configure LVM Snapshots for servers"
-      - node_name: leapp-analysis
+        unified_job_template: "[RHEL AAP Upgrade] Configure LVM Snapshots for servers"
+      - identifier: leapp-analysis
         approval: false
-        node_job_template: "[RHEL AAP Upgrade] Run LEAPP Analysis"
+        unified_job_template: "[RHEL AAP Upgrade] Run LEAPP Analysis"
 
-  - aap2_workflow_name: "[RHEL AAP Upgrade] Remediate inhibitors and re-run analysis"
-    aap2_workflow_project: RHEL AAP Upgrade
-    aap2_workflow_survey_enabled: true
-    aap2_workflow_survey_spec: "{{ survey_spec }}"
-    aap2_workflow_nodes:
-      - node_name: leapp-remediate-inhibitors
-        approval: false
+  - name: "[RHEL AAP Upgrade] Remediate inhibitors and re-run analysis"
+    organization: Default
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    simplified_workflow_nodes:
+      - identifier: leapp-remediate-inhibitors
         nodes_on_success:
           - leapp-analysis
-        node_job_template: "[RHEL AAP Upgrade] Remediate inhibitors"
-      - node_name: leapp-analysis
-        approval: false
-        node_job_template: "[RHEL AAP Upgrade] Run LEAPP Analysis"
+        unified_job_template: "[RHEL AAP Upgrade] Remediate inhibitors"
+      - identifier: leapp-analysis
+        unified_job_template: "[RHEL AAP Upgrade] Run LEAPP Analysis"
 
-  - aap2_workflow_name: "[RHEL AAP Upgrade] Perform rollback on systems"
-    aap2_workflow_project: RHEL AAP Upgrade
-    aap2_workflow_survey_enabled: true
-    aap2_workflow_survey_spec: "{{ survey_spec }}"
-    aap2_workflow_nodes:
-      - node_name: leapp-rollback
-        approval: false
+  - name: "[RHEL AAP Upgrade] Perform rollback on systems"
+    organization: Default
+    survey_enabled: true
+    survey_spec: "{{ survey_spec }}"
+    simplified_workflow_nodes:
+      - identifier: leapp-rollback
         nodes_on_success:
           - leapp-remove-lvm-snapshot
-        node_job_template: "[RHEL AAP Upgrade] Rollback system upgrade"
-      - node_name: leapp-remove-lvm-snapshot
-        approval: false
-        node_job_template: "[RHEL AAP Upgrade] Remove LVM Snapshots"
+        unified_job_template: "[RHEL AAP Upgrade] Rollback system upgrade"
+      - identifier: leapp-remove-lvm-snapshot
+        unified_job_template: "[RHEL AAP Upgrade] Remove LVM Snapshots"

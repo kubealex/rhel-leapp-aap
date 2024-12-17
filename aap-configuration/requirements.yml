@@ -1,7 +1,6 @@
 ---
 collections:
   - ansible.controller
+  - ansible.platform
   - community.general
-roles:
-  - name: role_aap_controller_setup
-    src: https://github.com/kubealex/role_aap_controller_setup.git
+  - infra.aap_configuration

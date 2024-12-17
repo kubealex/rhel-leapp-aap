@@ -3,5 +3,11 @@
   hosts: localhost
   vars_files:
     - config-vars.yml
+  vars:
+    aap_hostname: "{{ aap2_controller_url }}"
+    aap_username: "{{ aap2_controller_username }}"
+    aap_password: "{{ aap2_controller_password }}"
+    aap_validate_certs: false
+    aap_configuration_async_retries: 60
   roles:
-    - role: role_aap_controller_setup
+    - role: infra.aap_configuration.dispatch

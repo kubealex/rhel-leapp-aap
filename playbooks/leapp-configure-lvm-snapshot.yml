@@ -12,13 +12,8 @@
       snapshot_create_snapshot_autoextend_threshold: 70
       snapshot_create_snapshot_autoextend_percent: 20
       snapshot_create_boot_backup: true
-      snapshot_create_volumes:
-        - vg: rhel
-          lv: root
-          size: 15G
-        # - vg: rhel
-        #   lv: var
-        #   size: 2G
+      snapshot_create_volumes: "{{ server_logical_volumes }}"
+
   # post_tasks:
   #   - name: RHEL AAP Upgrade | Ensure required packages are in place
   #     ansible.builtin.dnf:

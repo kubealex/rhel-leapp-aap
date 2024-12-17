@@ -1,0 +1,13 @@
+server_logical_volumes:
+  - vg: rhel
+    lv: root
+    size: 20G
+  - vg: rhel
+    lv: home
+    size: 10G
+  - vg: rhel
+    lv: opt
+    size: 5G
+  - vg: rhel
+    lv: var
+    size: 15G

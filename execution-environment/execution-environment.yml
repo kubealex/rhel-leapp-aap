@@ -10,7 +10,13 @@ dependencies:
     package_pip: ansible-core
   ansible_runner:
     package_pip: ansible-runner
-
+  galaxy:
+    collections:
+      - name: ansible.posix
+      - name: community.general
+      - name: infra.leapp
+      - name: infra.lvm_snapshots
+      - name: redhat.rhel_system_roles
   python_interpreter:
     package_system: "python3.9"
     python_path: "/usr/bin/python3"

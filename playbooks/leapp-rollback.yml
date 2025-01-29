@@ -1,0 +1,7 @@
+---
+- name: RHEL AAP Upgrade | Rollback
+  hosts: "{{ target_hosts | default('rhel_servers', true) }}"
+  become: true
+  roles:
+    - role: infra.lvm_snapshots.snapshot_revert
+      snapshot_revert_set_name: ripu

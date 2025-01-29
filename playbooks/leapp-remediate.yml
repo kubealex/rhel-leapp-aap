@@ -1,0 +1,13 @@
+---
+- name: RHEL AAP Upgrade | Remediate common issues
+  hosts: "{{ target_hosts | default('rhel_servers', true) }}"
+  become: true
+  tasks:
+    - name: RHEL AAP Upgrade | Ensure floppy and pata_acpi modules are nuloaded
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: absent
+        persistent: absent
+      loop:
+        - pata_acpi
+        - floppy

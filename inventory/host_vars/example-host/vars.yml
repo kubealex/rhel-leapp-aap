@@ -1,0 +1,4 @@
+server_logical_volumes:
+  - vg: rhel
+    lv: root
+    size: 10G

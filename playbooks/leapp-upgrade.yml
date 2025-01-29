@@ -1,0 +1,15 @@
+---
+- name: RHEL AAP Upgrade | Run upgrade tasks
+  hosts: "{{ target_hosts | default('rhel_servers', true) }}"
+  become: true
+  roles:
+    - role: infra.leapp.upgrade
+      vars:
+        leapp_upgrade_type: "{{ upgrade_source }}"
+
+        satellite_organization: "{{ upgrade_satellite_organization | default(omit, true) }}"
+        satellite_activation_key_leapp: "{{ upgrade_satellite_activation_key | default(omit, true) }}"
+
+        infra_leapp_upgrade_system_roles_collection: redhat.rhel_system_roles
+        post_upgrade_unset_release: true
+        post_upgrade_update: true

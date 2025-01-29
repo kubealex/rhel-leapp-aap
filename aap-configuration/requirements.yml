@@ -1,0 +1,6 @@
+---
+collections:
+  - ansible.controller
+  - ansible.platform
+  - community.general
+  - infra.aap_configuration

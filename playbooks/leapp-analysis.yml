@@ -1,0 +1,17 @@
+---
+- name: RHEL AAP Upgrade | Pre-analysis tasks
+  hosts: "{{ target_hosts | default('rhel_servers', true) }}"
+  become: true
+  roles:
+    - role: infra.leapp.analysis
+      vars:
+        leapp_upgrade_type: "{{ upgrade_source }}"
+
+        satellite_organization: "{{ upgrade_satellite_organization | default(omit, true) }}"
+        satellite_activation_key_leapp: "{{ upgrade_satellite_activation_key | default(omit, true) }}"
+
+        leapp_high_sev_as_inhibitors: false
+        infra_leapp_upgrade_system_roles_collection: redhat.rhel_system_roles
+        leapp_answerfile: |
+          [remove_pam_pkcs11_module_check]
+          confirm = True

@@ -1,0 +1,60 @@
+---
+- name: RHEL AAP Upgrade | Pre-flight checks
+  hosts: "{{ target_hosts | default('rhel_servers', true) }}"
+  become: true
+  pre_tasks:
+    - name: RHEL AAP Ugrade | Ensure all packages are updated # noqa package-latest
+      when:
+        - ansible_distribution == 'RedHat'
+        - ansible_distribution_major_version == '7'
+      block:
+        - name: RHEL AAP Ugrade | Ensure all packages are updated # noqa package-latest
+          ansible.builtin.yum:
+            name: "*"
+            state: latest
+
+        - name: RHEL AAP Upgrade | Ensure Cockpit Console and LEAPP plugin are present
+          ansible.builtin.yum:
+            name:
+              - cockpit
+              - cockpit-system
+              - cockpit-leapp
+              - vdo
+            enablerepo:
+              - rhel-7-server-extras-rpms
+            state: present
+
+    - name: RHEL AAP Ugrade | Ensure all packages are updated # noqa package-latest
+      when:
+        - ansible_distribution == 'RedHat'
+        - ansible_distribution_major_version == '8'
+      block:
+        - name: RHEL AAP Ugrade | Ensure all packages are updated # noqa package-latest
+          ansible.builtin.dnf:
+            name: "*"
+            state: latest
+
+        - name: RHEL AAP Upgrade | Ensure Cockpit Console and LEAPP plugin are present
+          ansible.builtin.dnf:
+            name:
+              - cockpit
+              - cockpit-system
+              - cockpit-leapp
+              - vdo
+            state: present
+
+    - name: RHEL AAP Upgrade | Manage firewall ports
+      ansible.posix.firewalld:
+        port: 9090/tcp
+        state: enabled
+        zone: public
+        permanent: true
+
+    - name: RHEL AAP Upgrade | Enable Cockpit service
+      ansible.builtin.service:
+        name: cockpit.socket
+        state: started
+        enabled: true
+
+    - name: RHEL AAP Upgrade | Reboot system to apply new kernel if any
+      ansible.builtin.reboot:

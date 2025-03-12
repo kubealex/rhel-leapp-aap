@@ -45,7 +45,7 @@ leapp_survey_spec:
         - "satellite"
         - "cdn"
         - "rhui"
-      default: "satellite"
+      default: "cdn"
       index: 1
       variable: "upgrade_source"
     - question_name: "Satellite Organization"

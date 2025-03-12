@@ -3,11 +3,67 @@
   hosts: "{{ target_hosts | default('rhel_servers', true) }}"
   become: true
   tasks:
-    - name: RHEL AAP Upgrade | Ensure floppy and pata_acpi modules are nuloaded
+    - name: RHEL AAP Upgrade | Find occurrences of pam_tally2 in /etc/pam.d/ folder
+      ansible.builtin.find:
+        paths: /etc/pam.d/
+        file_type: file
+        contains: "pam_tally2.so"
+        read_whole_file: true
+        recurse: true
+      register: tally_file_list
+
+    - name: RHEL AAP Upgrade | Comment out lines in /etc/pam.d/ that contain specific patterns (only if not already commented)
+      ansible.builtin.lineinfile:
+        regexp: '^(?!#).*pam_tally2.so'
+        line: '# \g<0>'
+        backrefs: true
+        path: "{{ item }}"
+      loop: "{{ tally_file_list.files | map(attribute='path') | list }}"
+
+    - name: RHEL AAP Upgrade | Find occurrences of pam_pkcs in /etc/pam.d/ folder
+      ansible.builtin.find:
+        paths: /etc/pam.d/
+        file_type: file
+        contains: "pam_pkcs"
+        read_whole_file: true
+        recurse: true
+      register: pkcs_file_list
+
+    - name: RHEL AAP Upgrade | Comment out lines in /etc/pam.d/ that contain specific patterns (only if not already commented)
+      ansible.builtin.lineinfile:
+        regexp: '^(?!#).*pam_pkcs'
+        line: '# \g<0>'
+        backrefs: true
+        path: "{{ item }}"
+      loop: "{{ pkcs_file_list.files | map(attribute='path') | list }}"
+
+    - name: RHEL AAP Upgrade | Comment out lines containing "mac" in /etc/ssh/sshd_config (only if not already commented)
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^(?!#).*mac'
+        line: '# \g<0>'
+        backrefs: true
+
+    - name: RHEL AAP Upgrade | Remove unnecessary kernel modules
       community.general.modprobe:
         name: "{{ item }}"
         state: absent
         persistent: absent
       loop:
-        - pata_acpi
         - floppy
+        - pata_acpi
+
+    - name: RHEL AAP Upgrade | Ensure the NFS filesystems are unmounted
+      ansible.posix.mount:
+        path: "{{ item.split()[1] }}"
+        state: absent
+      loop: "{{ lookup('file', '/etc/fstab').splitlines() | select('match', '^.*\\s+.*\\snfs\\s+.*$') | list }}"
+      when: item.split()[2] == 'nfs'
+      register: mount_status
+
+    - name: RHEL AAP Upgrade | Comment out NFS mount entries in /etc/fstab (only if not already commented)
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        regexp: '^([^#]*\s+.*nfs\s+.*)'
+        line: '# \g<0>'
+        backrefs: true

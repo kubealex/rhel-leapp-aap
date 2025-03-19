@@ -67,3 +67,6 @@
         regexp: '^([^#]*\s+.*nfs\s+.*)'
         line: '# \g<0>'
         backrefs: true
+
+    - name: RHEL AAP Upgrade | Reboot system before proceeding
+      ansible.builtin.reboot:
